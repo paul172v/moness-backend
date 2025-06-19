@@ -33,6 +33,10 @@
     "types": "file:../../../../morgan",
     "typescript": "^5.5.4"
   },
+  "engines": {
+    "node": "22.x",
+    "npm": "10.x"
+  },
   "dependencies": {
     "@sendgrid/mail": "^8.1.4",
     "@types/hpp": "^0.2.6",
