@@ -5,11 +5,12 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
+    "heroku-postbuild": "npm install && npm run build",
+    "start": "node dist/server.js",
     "dev-start": "nodemon dist/server.js",
     "dev": "tsc --watch",
     "test": "jest",
-    "test:watch": "jest --watchAll",
-    "start": "node index.js"
+    "test:watch": "jest --watchAll"
   },
   "keywords": [],
   "author": "",
