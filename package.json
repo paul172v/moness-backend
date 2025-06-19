@@ -5,12 +5,11 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "nodemon dist/server.js",
+    "dev-start": "nodemon dist/server.js",
     "dev": "tsc --watch",
     "test": "jest",
     "test:watch": "jest --watchAll",
-    "heroku-prebuild": "rm -f package-lock.json",
-    "heroku-postbuild": "npm install"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
