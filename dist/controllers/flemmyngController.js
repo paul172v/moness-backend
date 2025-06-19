@@ -12,12 +12,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.flemmyngCreateMockData = exports.flemmyngGetOneDessertById = exports.flemmyngDeleteOneDessert = exports.flemmyngUpdateOneDessert = exports.flemmyngCreateOneDessert = exports.flemmyngGetOneSideById = exports.flemmyngDeleteOneSide = exports.flemmyngUpdateOneSide = exports.flemmyngCreateOneSide = exports.flemmyngGetOneMainById = exports.flemmyngDeleteOneMain = exports.flemmyngUpdateOneMain = exports.flemmyngCreateOneMain = exports.flemmyngGetOneStarterById = exports.flemmyngDeleteOneStarter = exports.flemmyngUpdateOneStarter = exports.flemmyngCreateOneStarter = exports.flemmyngGetOneWhileYouWaitById = exports.flemmyngDeleteOneWhileYouWait = exports.flemmyngUpdateOneWhileYouWait = exports.flemmyngCreateOneWhileYouWait = exports.flemmyngGetAll = void 0;
+exports.flemmyngCreateMockData = exports.flemmyngGetOneDessertById = exports.flemmyngDeleteOneDessert = exports.flemmyngUpdateOneDessert = exports.flemmyngCreateOneDessert = exports.flemmyngGetOneSideById = exports.flemmyngDeleteOneSide = exports.flemmyngUpdateOneSide = exports.flemmyngCreateOneSide = exports.flemmyngGetOneMainById = exports.flemmyngDeleteOneMain = exports.flemmyngUpdateOneMain = exports.flemmyngCreateOneMain = exports.flemmyngGetOneStarterById = exports.flemmyngDeleteOneStarter = exports.flemmyngUpdateOneStarter = exports.flemmyngCreateOneStarter = exports.flemmyngGetOneWhileYouWaitById = exports.flemmyngDeleteOneWhileYouWait = exports.flemmyngUpdateOneWhileYouWait = exports.flemmyngCreateOneWhileYouWait = exports.flemmyngGetAll = exports.formatPrice = void 0;
 const catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 const appError_1 = __importDefault(require("../utils/appError"));
 const handlerFactory_1 = require("./handlerFactory");
 const flemmyngModel_1 = require("../models/flemmyngModel");
 const flemmyngMenu_1 = require("../dev/flemmyngMenu");
+/* -------- Price Formatting Middleware for Updates -------- */
+const formatPrice = (req, res, next) => {
+    if (req.body.price !== undefined) {
+        req.body.price = parseFloat(Number(req.body.price).toFixed(2));
+    }
+    next();
+};
+exports.formatPrice = formatPrice;
+/* -------- Get All -------- */
 exports.flemmyngGetAll = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const whileYouWait = yield flemmyngModel_1.FlemmyngWhileYouWait.find();
     const starters = yield flemmyngModel_1.FlemmyngStarters.find();
@@ -39,10 +48,11 @@ exports.flemmyngGetAll = (0, catchAsync_1.default)((req, res) => __awaiter(void 
 }));
 /* -------- While You Wait ------ */
 exports.flemmyngCreateOneWhileYouWait = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, price } = req.body;
+    const { name, price, allergens } = req.body;
     const newWhileYouWaitItem = yield flemmyngModel_1.FlemmyngWhileYouWait.create({
         name,
-        price,
+        price: parseFloat(Number(price).toFixed(2)),
+        allergens,
     });
     if (!newWhileYouWaitItem) {
         return next(new appError_1.default("Could not create new While You Wait Item", 404));
@@ -60,7 +70,7 @@ exports.flemmyngCreateOneStarter = (0, catchAsync_1.default)((req, res, next) =>
     const { name, price, allergens, description, options } = req.body;
     const newStarterItem = yield flemmyngModel_1.FlemmyngStarters.create({
         name,
-        price,
+        price: parseFloat(Number(price).toFixed(2)),
         allergens,
         description,
         options,
@@ -81,7 +91,7 @@ exports.flemmyngCreateOneMain = (0, catchAsync_1.default)((req, res, next) => __
     const { name, price, allergens, description, options } = req.body;
     const newMainItem = yield flemmyngModel_1.FlemmyngMains.create({
         name,
-        price,
+        price: parseFloat(Number(price).toFixed(2)),
         allergens,
         description,
         options,
@@ -102,7 +112,7 @@ exports.flemmyngCreateOneSide = (0, catchAsync_1.default)((req, res, next) => __
     const { name, price, allergens, options } = req.body;
     const newSideItem = yield flemmyngModel_1.FlemmyngSides.create({
         name,
-        price,
+        price: parseFloat(Number(price).toFixed(2)),
         allergens,
         options,
     });
@@ -122,7 +132,7 @@ exports.flemmyngCreateOneDessert = (0, catchAsync_1.default)((req, res, next) =>
     const { name, price, allergens, description, options } = req.body;
     const newDessertItem = yield flemmyngModel_1.FlemmyngDesserts.create({
         name,
-        price,
+        price: parseFloat(Number(price).toFixed(2)),
         allergens,
         description,
         options,
@@ -140,13 +150,11 @@ exports.flemmyngDeleteOneDessert = (0, handlerFactory_1.factoryDeleteOne)(flemmy
 exports.flemmyngGetOneDessertById = (0, handlerFactory_1.factoryGetOneById)(flemmyngModel_1.FlemmyngDesserts);
 /* -------- Create Mock Data ------ */
 exports.flemmyngCreateMockData = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    // Clear existing documents before seeding
     yield flemmyngModel_1.FlemmyngWhileYouWait.deleteMany();
     yield flemmyngModel_1.FlemmyngStarters.deleteMany();
     yield flemmyngModel_1.FlemmyngMains.deleteMany();
     yield flemmyngModel_1.FlemmyngSides.deleteMany();
     yield flemmyngModel_1.FlemmyngDesserts.deleteMany();
-    // Create new documents
     const whileYouWait = yield flemmyngModel_1.FlemmyngWhileYouWait.insertMany(flemmyngMenu_1.whileYouWaitArr);
     const starters = yield flemmyngModel_1.FlemmyngStarters.insertMany(flemmyngMenu_1.startersArr);
     const mains = yield flemmyngModel_1.FlemmyngMains.insertMany(flemmyngMenu_1.mainsArr);

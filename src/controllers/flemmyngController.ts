@@ -21,6 +21,19 @@ import {
   dessertsArr,
 } from "../dev/flemmyngMenu";
 
+/* -------- Price Formatting Middleware for Updates -------- */
+export const formatPrice = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (req.body.price !== undefined) {
+    req.body.price = parseFloat(Number(req.body.price).toFixed(2));
+  }
+  next();
+};
+
+/* -------- Get All -------- */
 export const flemmyngGetAll = catchAsync(
   async (req: Request, res: Response) => {
     const whileYouWait = await FlemmyngWhileYouWait.find();
@@ -46,14 +59,14 @@ export const flemmyngGetAll = catchAsync(
 );
 
 /* -------- While You Wait ------ */
-
 export const flemmyngCreateOneWhileYouWait = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { name, price } = req.body;
+    const { name, price, allergens } = req.body;
 
     const newWhileYouWaitItem = await FlemmyngWhileYouWait.create({
       name,
-      price,
+      price: parseFloat(Number(price).toFixed(2)),
+      allergens,
     });
 
     if (!newWhileYouWaitItem) {
@@ -79,14 +92,13 @@ export const flemmyngGetOneWhileYouWaitById =
   factoryGetOneById(FlemmyngWhileYouWait);
 
 /* -------- Starters ------ */
-
 export const flemmyngCreateOneStarter = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { name, price, allergens, description, options } = req.body;
 
     const newStarterItem = await FlemmyngStarters.create({
       name,
-      price,
+      price: parseFloat(Number(price).toFixed(2)),
       allergens,
       description,
       options,
@@ -110,14 +122,13 @@ export const flemmyngDeleteOneStarter = factoryDeleteOne(FlemmyngStarters);
 export const flemmyngGetOneStarterById = factoryGetOneById(FlemmyngStarters);
 
 /* -------- Mains ------ */
-
 export const flemmyngCreateOneMain = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { name, price, allergens, description, options } = req.body;
 
     const newMainItem = await FlemmyngMains.create({
       name,
-      price,
+      price: parseFloat(Number(price).toFixed(2)),
       allergens,
       description,
       options,
@@ -141,14 +152,13 @@ export const flemmyngDeleteOneMain = factoryDeleteOne(FlemmyngMains);
 export const flemmyngGetOneMainById = factoryGetOneById(FlemmyngMains);
 
 /* -------- Sides ------ */
-
 export const flemmyngCreateOneSide = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { name, price, allergens, options } = req.body;
 
     const newSideItem = await FlemmyngSides.create({
       name,
-      price,
+      price: parseFloat(Number(price).toFixed(2)),
       allergens,
       options,
     });
@@ -171,14 +181,13 @@ export const flemmyngDeleteOneSide = factoryDeleteOne(FlemmyngSides);
 export const flemmyngGetOneSideById = factoryGetOneById(FlemmyngSides);
 
 /* -------- Desserts ------ */
-
 export const flemmyngCreateOneDessert = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { name, price, allergens, description, options } = req.body;
 
     const newDessertItem = await FlemmyngDesserts.create({
       name,
-      price,
+      price: parseFloat(Number(price).toFixed(2)),
       allergens,
       description,
       options,
@@ -202,17 +211,14 @@ export const flemmyngDeleteOneDessert = factoryDeleteOne(FlemmyngDesserts);
 export const flemmyngGetOneDessertById = factoryGetOneById(FlemmyngDesserts);
 
 /* -------- Create Mock Data ------ */
-
 export const flemmyngCreateMockData = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    // Clear existing documents before seeding
     await FlemmyngWhileYouWait.deleteMany();
     await FlemmyngStarters.deleteMany();
     await FlemmyngMains.deleteMany();
     await FlemmyngSides.deleteMany();
     await FlemmyngDesserts.deleteMany();
 
-    // Create new documents
     const whileYouWait = await FlemmyngWhileYouWait.insertMany(whileYouWaitArr);
     const starters = await FlemmyngStarters.insertMany(startersArr);
     const mains = await FlemmyngMains.insertMany(mainsArr);

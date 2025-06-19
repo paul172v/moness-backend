@@ -36,7 +36,9 @@ const limiter = rateLimit({
 app.use("/table", limiter);
 const tableRoutes_1 = __importDefault(require("./routes/tableRoutes"));
 const employeeRoutes_1 = __importDefault(require("./routes/employeeRoutes"));
+const flemmyngRoutes_1 = __importDefault(require("./routes/flemmyngRoutes"));
 app.use("/api/v1/table", tableRoutes_1.default);
+app.use("/api/v1/flemmyng", flemmyngRoutes_1.default);
 app.use("/api/v1/employee", employeeRoutes_1.default);
 app.all("*", (req, res, next) => {
     next(new appError_1.default(`Can't find ${req.originalUrl} on this server!`, 404));

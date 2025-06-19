@@ -41,8 +41,10 @@ app.use("/table", limiter);
 
 import tableRouter from "./routes/tableRoutes";
 import employeeRouter from "./routes/employeeRoutes";
+import flemmyngRouter from "./routes/flemmyngRoutes";
 
 app.use("/api/v1/table", tableRouter);
+app.use("/api/v1/flemmyng", flemmyngRouter);
 app.use("/api/v1/employee", employeeRouter);
 
 app.all("*", (req, res, next) => {

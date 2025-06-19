@@ -8,6 +8,12 @@ const menuItemSchema = new mongoose.Schema({
   options: { type: String },
 });
 
+menuItemSchema.pre("save", function (next) {
+  this.price = Number(this.price.toFixed(2));
+
+  next();
+});
+
 export const FlemmyngWhileYouWait = mongoose.model(
   "FlemmyngWhileYouWait",
   menuItemSchema

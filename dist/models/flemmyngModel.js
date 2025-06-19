@@ -12,6 +12,10 @@ const menuItemSchema = new mongoose_1.default.Schema({
     description: { type: String },
     options: { type: String },
 });
+menuItemSchema.pre("save", function (next) {
+    this.price = Number(this.price.toFixed(2));
+    next();
+});
 exports.FlemmyngWhileYouWait = mongoose_1.default.model("FlemmyngWhileYouWait", menuItemSchema);
 exports.FlemmyngStarters = mongoose_1.default.model("FlemmyngStarters", menuItemSchema);
 exports.FlemmyngMains = mongoose_1.default.model("FlemmyngMains", menuItemSchema);
