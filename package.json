@@ -8,7 +8,9 @@
     "start": "nodemon dist/server.js",
     "dev": "tsc --watch",
     "test": "jest",
-    "test:watch": "jest --watchAll"
+    "test:watch": "jest --watchAll",
+    "heroku-prebuild": "rm -f package-lock.json",
+    "heroku-postbuild": "npm install"
   },
   "keywords": [],
   "author": "",
