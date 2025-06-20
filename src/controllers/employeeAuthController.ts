@@ -208,7 +208,7 @@ export const employeeForgotPasswordSendEmail = catchAsync(
       await employee.save({ validateBeforeSave: false });
 
       // 3) Construct Reset URL & Email Content
-      const resetUrl = `http://localhost:5173/forgot-password/change-password/${resetToken}`;
+      const resetUrl = `https://172v-moness-staff-portal.netlify.app/forgot-password/change-password/${resetToken}`;
       const html = `
       <!DOCTYPE html>
       <html>
