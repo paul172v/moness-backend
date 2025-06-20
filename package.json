@@ -32,7 +32,6 @@
     "nodemon": "^3.1.9",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.4",
-    "types": "file:../../../../morgan",
     "typescript": "^5.5.4"
   },
   "engines": {
