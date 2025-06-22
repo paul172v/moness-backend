@@ -16,8 +16,7 @@ interface EmailOptions {
   }>;
 }
 
-// Choose email provider dynamically
-const EMAIL_PROVIDER = process.env.EMAIL_PROVIDER || "mailtrap"; // Default to Mailtrap for testing
+const EMAIL_PROVIDER = process.env.EMAIL_PROVIDER || "mailtrap";
 
 const sendEmail = async ({
   email,
@@ -26,18 +25,17 @@ const sendEmail = async ({
   attachments,
 }: EmailOptions) => {
   if (EMAIL_PROVIDER === "sendgrid") {
-    // ✅ SendGrid Configuration
     sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 
     const msg = {
       to: email,
-      from: "paul@paul172v-portfolio.co.uk", // Verified sender for SendGrid
+      from: "paul@paul172v-portfolio.co.uk",
       subject: subject,
       html: html,
       attachments: attachments
         ? attachments.map((att) => ({
             filename: att.filename,
-            content: fs.readFileSync(att.path).toString("base64"), // ✅ Read file content as base64
+            content: fs.readFileSync(att.path).toString("base64"),
             cid: att.cid,
           }))
         : [],
@@ -45,15 +43,15 @@ const sendEmail = async ({
 
     try {
       await sgMail.send(msg);
-      console.error("✅ Email sent via SendGrid");
+      console.log("✅ Email sent via SendGrid");
     } catch (error: any) {
-      console.error("❌ SendGrid Error:", error.message);
+      console.error("❌ SendGrid Error:", error);
       if (error.response) {
-        console.error("❌ SendGrid Response:", error.response.body);
+        console.error("❌ SendGrid Response Body:", error.response.body);
       }
+      throw error; // ⬅️ This is critical
     }
   } else {
-    // ✅ Mailtrap Configuration
     const transporter = nodemailer.createTransport({
       host: process.env.MAILTRAP_HOST,
       port: Number(process.env.MAILTRAP_PORT) || 2525,
@@ -79,16 +77,12 @@ const sendEmail = async ({
 
     try {
       await transporter.sendMail(mailOptions);
-      console.error("✅ Email sent via Mailtrap");
+      console.log("✅ Email sent via Mailtrap");
     } catch (error: any) {
-      console.error("❌ Mailtrap Error:", error.message);
+      console.error("❌ Mailtrap Error:", error);
+      throw error; // ⬅️ This is critical
     }
   }
 };
 
 export default sendEmail;
-
-//// Sendgrid
-// Sendgrid recovery code
-// 6NSMVSJZZP1CED257RGTLAZX
-// Username: moness-staff-portal
