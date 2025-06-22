@@ -45,7 +45,7 @@ const sendEmail = async ({
 
     try {
       await sgMail.send(msg);
-      console.log("✅ Email sent via SendGrid");
+      console.error("✅ Email sent via SendGrid");
     } catch (error: any) {
       console.error("❌ SendGrid Error:", error.message);
       if (error.response) {
@@ -79,7 +79,7 @@ const sendEmail = async ({
 
     try {
       await transporter.sendMail(mailOptions);
-      console.log("✅ Email sent via Mailtrap");
+      console.error("✅ Email sent via Mailtrap");
     } catch (error: any) {
       console.error("❌ Mailtrap Error:", error.message);
     }
