@@ -236,7 +236,7 @@ export const employeeForgotPasswordSendEmail = catchAsync(
         </head>
         <body>
           <div class="container">
-            <img src="cid:monessLogo" alt="Moness Staff Portal" width="200" />
+            <img src="https://172v-moness-menu.netlify.app/public/moness-logo.jpg" alt="Moness Staff Portal" width="200" />
             <h2>Password Reset Request</h2>
             <p>Hello,</p>
             <p>
@@ -253,21 +253,11 @@ export const employeeForgotPasswordSendEmail = catchAsync(
         </body>
       </html>`;
 
-      // 4) Define Path to Logo Image
-      const logoPath = path.resolve(__dirname, "../public/moness-logo.jpg");
-
       // 5) Send Email via Mailtrap
       await sendEmail({
         email: employee.email,
         subject: "Moness Staff Portal: Password Reset",
         html,
-        attachments: [
-          {
-            filename: "moness-logo.jpg",
-            path: logoPath,
-            cid: "monessLogo",
-          },
-        ],
       });
 
       res.status(200).json({

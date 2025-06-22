@@ -16,44 +16,64 @@ interface EmailOptions {
   }>;
 }
 
+// Set default provider to Mailtrap for safety
 const EMAIL_PROVIDER = process.env.EMAIL_PROVIDER || "mailtrap";
 
+// Unified email sending function
 const sendEmail = async ({
   email,
   subject,
   html,
   attachments,
 }: EmailOptions) => {
+  console.log("🔧 Using EMAIL_PROVIDER:", EMAIL_PROVIDER);
+
+  // --- SENDGRID ---
   if (EMAIL_PROVIDER === "sendgrid") {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 
     const msg = {
       to: email,
-      from: "paul@paul172v-portfolio.co.uk",
-      subject: subject,
-      html: html,
-      attachments: attachments
-        ? attachments.map((att) => ({
-            filename: att.filename,
-            content: fs.readFileSync(att.path).toString("base64"),
-            cid: att.cid,
-          }))
-        : [],
+      from: "paul@paul172v-portfolio.co.uk", // MUST be verified in SendGrid
+      subject,
+      html,
+      // If you want to enable attachments later:
+      // attachments: attachments
+      //   ? attachments.map((att) => ({
+      //       filename: att.filename,
+      //       content: fs.readFileSync(att.path).toString("base64"),
+      //       cid: att.cid,
+      //     }))
+      //   : [],
     };
 
     try {
       await sgMail.send(msg);
       console.log("✅ Email sent via SendGrid");
     } catch (error: any) {
-      console.error("❌ SendGrid Error:", error);
+      console.error("❌ SendGrid Error (raw):", error);
+
       if (error.response) {
+        console.error("❌ SendGrid Status:", error.code || error.statusCode);
         console.error("❌ SendGrid Response Body:", error.response.body);
       }
-      throw error; // ⬅️ This is critical
+
+      try {
+        console.error(
+          "❌ SendGrid Error (JSON):",
+          JSON.stringify(error, null, 2)
+        );
+      } catch (jsonErr) {
+        console.error("❌ Could not stringify SendGrid error:", jsonErr);
+      }
+
+      throw error;
     }
+
+    // --- MAILTRAP ---
   } else {
     const transporter = nodemailer.createTransport({
-      host: process.env.MAILTRAP_HOST,
+      host: process.env.MAILTRAP_HOST || "smtp.mailtrap.io",
       port: Number(process.env.MAILTRAP_PORT) || 2525,
       auth: {
         user: process.env.MAILTRAP_USER,
@@ -66,21 +86,24 @@ const sendEmail = async ({
       to: email,
       subject,
       html,
-      attachments: attachments
-        ? attachments.map((att) => ({
-            filename: att.filename,
-            path: att.path,
-            cid: att.cid,
-          }))
-        : [],
+      // Optional attachments, if needed again later
+      // attachments: attachments || [],
     };
 
     try {
       await transporter.sendMail(mailOptions);
       console.log("✅ Email sent via Mailtrap");
     } catch (error: any) {
-      console.error("❌ Mailtrap Error:", error);
-      throw error; // ⬅️ This is critical
+      console.error("❌ Mailtrap Error (raw):", error);
+      try {
+        console.error(
+          "❌ Mailtrap Error (JSON):",
+          JSON.stringify(error, null, 2)
+        );
+      } catch (jsonErr) {
+        console.error("❌ Could not stringify Mailtrap error:", jsonErr);
+      }
+      throw error;
     }
   }
 };
