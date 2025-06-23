@@ -1,5 +1,5 @@
 {
-  "name": "04-node",
+  "name": "moness-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -13,7 +13,7 @@
     "test:watch": "jest --watchAll"
   },
   "keywords": [],
-  "author": "",
+  "author": "Paul Harris",
   "license": "ISC",
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
